@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DN Subs & Dubs</title>
+<title>DN Subs & Dubs - 5s Offset Sync</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -23,7 +23,7 @@
 </head>
 <body>
 
-<h1>DN Subs & Dubs</h1>
+<h1>DN Subs & Dubs - 5s Offset Sync</h1>
 
 <input type="file" id="original" accept="video/*">
 <input type="file" id="dubbed" accept="video/*"><br><br>
@@ -32,91 +32,5 @@
 <video id="dubbedPlayer" controls></video>
 
 <div class="controls">
-  <button onclick="playBoth()">Play Both</button>
-  <button onclick="pauseBoth()">Pause Both</button>
-  <button onclick="originalOnly()">Original Only</button>
-  <button onclick="dubbedOnly()">Dubbed Only</button>
-  <button onclick="bothAudio()">Both Audio</button>
-</div>
-
-<script>
-const original = document.getElementById("original");
-const dubbed = document.getElementById("dubbed");
-const origPlayer = document.getElementById("originalPlayer");
-const dubPlayer = document.getElementById("dubbedPlayer");
-
-// Load original video
-original.onchange = () => {
-    const file = original.files[0];
-    if (file) {
-        origPlayer.src = URL.createObjectURL(file);
-        origPlayer.load();
-    }
-};
-
-// Load dubbed video
-dubbed.onchange = () => {
-    const file = dubbed.files[0];
-    if (file) {
-        dubPlayer.src = URL.createObjectURL(file);
-        dubPlayer.load();
-    }
-};
-
-// Play both videos muted initially to bypass autoplay restrictions
-function playBoth() {
-    origPlayer.muted = true;
-    dubPlayer.muted = true;
-    origPlayer.play().then(() => {
-        dubPlayer.play().catch(err => console.log("Dubbed autoplay blocked:", err));
-    }).catch(err => console.log("Original autoplay blocked:", err));
-}
-
-// Pause both videos
-function pauseBoth() {
-    origPlayer.pause();
-    dubPlayer.pause();
-}
-
-// Original audio only
-function originalOnly() {
-    origPlayer.muted = false;
-    dubPlayer.muted = true;
-    if (origPlayer.paused) origPlayer.play();
-}
-
-// Dubbed audio only
-function dubbedOnly() {
-    origPlayer.muted = true;
-    dubPlayer.muted = false;
-    if (dubPlayer.paused) dubPlayer.play();
-}
-
-// Both audios
-function bothAudio() {
-    origPlayer.muted = false;
-    dubPlayer.muted = false;
-}
-
-// --- Sync dubbed video with original ---
-function syncDubbed() {
-    dubPlayer.currentTime = origPlayer.currentTime;
-}
-
-origPlayer.addEventListener("pause", () => {
-    syncDubbed();
-    dubPlayer.pause();
-});
-
-origPlayer.addEventListener("play", () => {
-    syncDubbed();
-    dubPlayer.play();
-});
-
-origPlayer.addEventListener("seeking", () => {
-    syncDubbed();
-});
-</script>
-
-</body>
-</html>
+  <button onclick="playOriginal()">Play Original</button>
+  <button onclick="playDubb
