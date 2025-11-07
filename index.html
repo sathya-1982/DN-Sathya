@@ -1,117 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DN Subs & Dubs - 5s Offset Sync</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  body {
-    font-family: 'Roboto', sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    color: #333;
-  }
-
-  header {
-    background: #1a1a1a;
-    color: #fff;
-    padding: 20px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-  }
-
-  header img {
-    height: 50px;
-  }
-
-  header h1 {
-    font-size: 1.8rem;
-    margin: 0;
-  }
-
-  main {
-    padding: 20px;
-  }
-
-  input[type="file"] {
-    margin: 10px;
-  }
-
-  .video-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-
-  video {
-    width: 45%;
-    max-width: 600px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
-
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 30px;
-  }
-
-  .controls button {
-    background: #1a73e8;
-    border: none;
-    color: white;
-    padding: 12px 18px;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .controls button:hover {
-    background: #1664c1;
-  }
-
-  @media (max-width: 768px) {
-    video {
-      width: 90%;
-    }
-  }
-</style>
-</head>
-<body>
-
-<header>
-  <img src="https://i.imgur.com/0Rkqz6O.png" alt="DN Logo">
-  <h1>DN Subs & Dubs</h1>
-</header>
-
-<main>
-  <input type="file" id="original" accept="video/*">
-  <input type="file" id="dubbed" accept="video/*">
-
-  <div class="video-container">
-    <video id="originalPlayer" controls></video>
-    <video id="dubbedPlayer" controls></video>
-  </div>
-
-  <div class="controls">
-    <button onclick="playOriginal()">Play Original</button>
-    <button onclick="playDubbedFromSync()">Play Dubbed From Sync</button>
-    <button onclick="originalOnly()">Original Audio Only</button>
-    <button onclick="dubbedOnly()">Dubbed Audio Only</button>
-    <button onclick="bothAudio()">Both Audio</button>
-  </div>
-</main>
-
 <script>
 const original = document.getElementById("original");
-c
+const dubbed = document.getElementById("dubbed");
+const origPlayer = document.getElementById("originalPlayer");
+const dubPlayer = document.getElementById("dubbedPlayer");
+
+// Load original video
+original.onchange = () => {
+    const file = original.files[0];
+    if (file) {
+        origPlayer.src = URL.createObjectURL(file);
+        origPlayer.load();
+    }
+};
+
+// Load dubbed video
+dubbed.onchange = () => {
+    const file = dubbed.files[0];
+    if (file) {
+        dubPlayer.src = URL.createObjectURL(file);
+        dubPlayer.load();
+    }
+};
+
+function playBoth() {
+    // browsers block unmuted autoplay — mute first, then unmute after play
+    origPlayer.muted = true;
+    dubPlayer.muted = true;
+
+    origPlayer.play().then(() => {
+        dubPlayer.play().then(() => {
+            // after playing, unmute based on user choice
+        });
+    }).catch(err => console.log("Autoplay blocked:", err));
+}
+
+function pauseBoth() {
+    origPlayer.pause();
+    dubPlayer.pause();
+}
+
+function originalOnly() {
+    origPlayer.muted = false;
+    dubPlayer.muted = true;
+    if (origPlayer.paused) origPlayer.play();
+}
+
+function dubbedOnly() {
+    origPlayer.muted = true;
+    dubPlayer.muted = false;
+    if (dubPlayer.paused) dubPlayer.play();
+}
+
+function bothAudio() {
+    origPlayer.muted = false;
+    dubPlayer.muted = false;
+}
+</script>
